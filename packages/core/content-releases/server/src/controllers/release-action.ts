@@ -49,11 +49,11 @@ const releaseActionController = {
     const query = await permissionsManager.sanitizeQuery(ctx.query);
     const { results, pagination } = await releaseService.findActions(releaseId, query);
 
-    // Create a dictionary of all contentTypes in order to look up meta data (mainField, displayName)
-    const allReleaseContentTypesDictionary = await releaseService.getAllContentTypesMetaData(releaseId);
-    // Create a dictionary of all locales in order to look up meta data (locale name)
+    const allReleaseContentTypesDictionary = await releaseService.getAllContentTypesMetaData(
+      releaseId
+    );
     const allLocales: Locale[] = await strapi.plugin('i18n').service('locales').find();
-    const localeDictionary = allLocales.reduce<LocaleDictionary>((acc, locale): any => {
+    const allLocalesDictionary = allLocales.reduce<LocaleDictionary>((acc, locale) => {
       acc[locale.code] = { name: locale.name, code: locale.code };
 
       return acc;
@@ -66,7 +66,7 @@ const releaseActionController = {
           id: action.entry.id,
           meta: {
             contentType: allReleaseContentTypesDictionary[action.contentType],
-            locale: localeDictionary[action.entry.locale],
+            locale: allLocalesDictionary[action.entry.locale],
           },
         },
       };
@@ -98,6 +98,7 @@ const releaseActionController = {
       data: updatedAction,
     };
   },
+
   async delete(ctx: Koa.Context) {
     const actionId: DeleteReleaseAction.Request['params']['actionId'] = ctx.params.actionId;
     const releaseId: DeleteReleaseAction.Request['params']['releaseId'] = ctx.params.releaseId;
