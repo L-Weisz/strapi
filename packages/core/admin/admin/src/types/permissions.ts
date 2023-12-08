@@ -8,7 +8,8 @@ type SettingsPermissions =
   | 'transfer-tokens'
   | 'users'
   | 'webhooks'
-  | 'review-workflows';
+  | 'review-workflows'
+  | 'auditLogs';
 
 interface CRUDPermissions {
   main: Permission[];
